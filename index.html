@@ -1,0 +1,1662 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ArquiteturaB2B — Diagnóstico Estratégico Digital | Jack Sir</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --graphite: #0E1116;
+    --graphite-2: #151922;
+    --graphite-3: #202632;
+    --offwhite: #F6F6F4;
+    --paper: #FFFFFF;
+    --warm-gray: #A9A6A0;
+    --muted: #6F716D;
+    --petrol: #0D384C;
+    --bronze: #B88648;
+    --bronze-2: #C99A59;
+    --bronze-soft: rgba(184, 134, 72, .13);
+    --bronze-line: rgba(184, 134, 72, .28);
+    --line: rgba(14, 17, 22, .10);
+    --line-dark: rgba(246, 246, 244, .12);
+    --danger: #9B3D33;
+    --warning: #A76C2D;
+    --ok: #2E6E54;
+    --shadow: 0 22px 70px rgba(14, 17, 22, .08);
+    --radius: 18px;
+    --serif: 'Cormorant Garamond', Georgia, serif;
+    --sans: 'Inter', Arial, sans-serif;
+  }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: var(--sans);
+    background:
+      radial-gradient(circle at top left, rgba(184,134,72,.08), transparent 34rem),
+      linear-gradient(180deg, #F9F8F5 0%, var(--offwhite) 48%, #F1F0EC 100%);
+    color: var(--graphite);
+    font-size: 15px;
+    line-height: 1.65;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  a { color: inherit; }
+
+  .report-shell {
+    width: min(100%, 1180px);
+    margin: 0 auto;
+    background: var(--offwhite);
+    box-shadow: 0 0 0 1px rgba(14,17,22,.05), var(--shadow);
+  }
+
+  .container {
+    width: min(100% - 48px, 1020px);
+    margin: 0 auto;
+  }
+
+  .section {
+    position: relative;
+    padding: clamp(56px, 7vw, 92px) 0;
+    border-bottom: 1px solid var(--line);
+  }
+
+  .section.compact { padding: clamp(40px, 6vw, 64px) 0; }
+  .section.dark {
+    background: var(--graphite);
+    color: var(--offwhite);
+    border-bottom-color: var(--line-dark);
+  }
+
+  .section.kraft {
+    background: #F0EEE8;
+  }
+
+  .section-header {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(240px, 360px);
+    gap: clamp(24px, 4vw, 64px);
+    align-items: end;
+    margin-bottom: clamp(32px, 5vw, 52px);
+  }
+
+  .eyebrow {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    color: var(--bronze);
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: .22em;
+    text-transform: uppercase;
+    margin-bottom: 14px;
+  }
+
+  .eyebrow::before {
+    content: "";
+    width: 34px;
+    height: 1px;
+    background: currentColor;
+    opacity: .8;
+  }
+
+  h1, h2, h3 {
+    font-family: var(--serif);
+    letter-spacing: -.015em;
+    line-height: .98;
+  }
+
+  h1 {
+    font-size: clamp(54px, 9vw, 104px);
+    font-weight: 500;
+    max-width: 780px;
+    color: var(--offwhite);
+  }
+
+  h2 {
+    font-size: clamp(36px, 5.2vw, 64px);
+    font-weight: 500;
+    color: var(--graphite);
+  }
+
+  .dark h2 { color: var(--offwhite); }
+
+  h3 {
+    font-size: clamp(24px, 3vw, 34px);
+    font-weight: 500;
+  }
+
+  .lead {
+    color: rgba(14,17,22,.65);
+    font-size: clamp(15px, 1.8vw, 18px);
+    max-width: 680px;
+    font-weight: 300;
+  }
+
+  .dark .lead { color: rgba(246,246,244,.62); }
+
+  .micro {
+    color: var(--muted);
+    font-size: 12px;
+    line-height: 1.55;
+  }
+
+  .dark .micro { color: rgba(246,246,244,.52); }
+
+  /* Brand signature */
+  .brand-signature {
+    display: inline-grid;
+    grid-template-columns: 54px auto;
+    gap: 18px;
+    align-items: center;
+    min-width: 280px;
+  }
+
+  .brand-mark {
+    width: 54px;
+    height: 54px;
+    color: var(--offwhite);
+    display: block;
+  }
+
+  .brand-mark .bronze { stroke: var(--bronze); fill: var(--bronze); }
+  .brand-mark .light { stroke: currentColor; }
+
+  .brand-word {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+
+  .brand-name {
+    color: var(--offwhite);
+    font-size: 18px;
+    letter-spacing: .35em;
+    text-transform: uppercase;
+    white-space: nowrap;
+  }
+
+  .brand-tagline {
+    color: rgba(246,246,244,.56);
+    font-size: 10px;
+    letter-spacing: .35em;
+    text-transform: uppercase;
+    white-space: nowrap;
+  }
+
+  .brand-on-light .brand-mark { color: var(--graphite); }
+  .brand-on-light .brand-name { color: var(--graphite); }
+  .brand-on-light .brand-tagline { color: var(--muted); }
+
+  /* Cover */
+  .cover {
+    min-height: 920px;
+    background:
+      linear-gradient(90deg, rgba(246,246,244,.045) 1px, transparent 1px),
+      linear-gradient(180deg, rgba(246,246,244,.035) 1px, transparent 1px),
+      radial-gradient(circle at 88% 18%, rgba(184,134,72,.16), transparent 25rem),
+      radial-gradient(circle at 8% 92%, rgba(13,56,76,.48), transparent 34rem),
+      linear-gradient(135deg, #0A0D11 0%, var(--graphite) 56%, #161B22 100%);
+    background-size: 72px 72px, 72px 72px, auto, auto, auto;
+    position: relative;
+    overflow: hidden;
+    color: var(--offwhite);
+  }
+
+  .cover::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background:
+      linear-gradient(120deg, transparent 0 58%, rgba(184,134,72,.18) 58.05%, transparent 58.25%),
+      linear-gradient(120deg, transparent 0 66%, rgba(184,134,72,.12) 66.05%, transparent 66.18%);
+    opacity: .72;
+    pointer-events: none;
+  }
+
+  .cover::after {
+    content: "";
+    position: absolute;
+    right: clamp(-80px, -6vw, -20px);
+    top: clamp(110px, 16vw, 190px);
+    width: clamp(240px, 30vw, 410px);
+    height: clamp(240px, 30vw, 410px);
+    border: 1px solid rgba(184,134,72,.20);
+    border-radius: 50%;
+    box-shadow:
+      -74px 74px 0 -73px rgba(246,246,244,.28),
+      -132px 132px 0 -131px rgba(246,246,244,.14);
+    pointer-events: none;
+  }
+
+  .cover-inner {
+    position: relative;
+    z-index: 1;
+    min-height: 920px;
+    display: flex;
+    flex-direction: column;
+    padding: clamp(40px, 6vw, 76px) 0;
+  }
+
+  .cover-top {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 32px;
+    margin-bottom: auto;
+  }
+
+  .confidential-seal {
+    border: 1px solid rgba(184,134,72,.44);
+    color: rgba(246,246,244,.78);
+    border-radius: 999px;
+    padding: 10px 16px;
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: .18em;
+    text-transform: uppercase;
+    white-space: nowrap;
+  }
+
+  .cover-center {
+    padding: clamp(80px, 11vw, 150px) 0 56px;
+  }
+
+  .cover-kicker {
+    color: var(--bronze-2);
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: .28em;
+    text-transform: uppercase;
+    margin-bottom: 28px;
+  }
+
+  .cover-subtitle {
+    max-width: 720px;
+    margin-top: 28px;
+    color: rgba(246,246,244,.78);
+    font-size: clamp(18px, 2.4vw, 26px);
+    font-weight: 300;
+    line-height: 1.45;
+  }
+
+  .cover-client {
+    margin-top: 54px;
+    padding-top: 30px;
+    border-top: 1px solid rgba(246,246,244,.12);
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1px;
+    background: rgba(246,246,244,.13);
+  }
+
+  .cover-meta {
+    background: rgba(14,17,22,.68);
+    padding: 24px 22px;
+    min-height: 112px;
+  }
+
+  .cover-meta span {
+    display: block;
+    color: rgba(246,246,244,.42);
+    font-size: 10px;
+    letter-spacing: .18em;
+    text-transform: uppercase;
+    margin-bottom: 10px;
+  }
+
+  .cover-meta strong {
+    display: block;
+    color: rgba(246,246,244,.92);
+    font-size: 14px;
+    font-weight: 500;
+    line-height: 1.45;
+  }
+
+  .cover-bottom {
+    display: flex;
+    align-items: end;
+    justify-content: space-between;
+    gap: 32px;
+    margin-top: auto;
+    padding-top: 42px;
+    border-top: 1px solid rgba(246,246,244,.10);
+  }
+
+  .doc-code {
+    color: rgba(246,246,244,.38);
+    font-size: 10px;
+    letter-spacing: .19em;
+    text-transform: uppercase;
+  }
+
+  /* Score executive */
+  .score-layout {
+    display: grid;
+    grid-template-columns: minmax(240px, 360px) minmax(0, 1fr);
+    gap: clamp(28px, 5vw, 64px);
+    align-items: stretch;
+  }
+
+  .score-panel {
+    border: 1px solid var(--bronze-line);
+    background:
+      radial-gradient(circle at 62% 26%, rgba(184,134,72,.16), transparent 12rem),
+      var(--graphite);
+    color: var(--offwhite);
+    border-radius: var(--radius);
+    padding: 34px;
+    min-height: 360px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .score-panel::after {
+    content: "";
+    position: absolute;
+    inset: 26px;
+    border: 1px solid rgba(246,246,244,.08);
+    pointer-events: none;
+  }
+
+  .score-label {
+    color: var(--bronze-2);
+    font-size: 11px;
+    letter-spacing: .22em;
+    text-transform: uppercase;
+    font-weight: 600;
+    margin-bottom: 26px;
+  }
+
+  .score-disc {
+    width: 196px;
+    height: 196px;
+    margin: 0 auto 28px;
+    border-radius: 50%;
+    display: grid;
+    place-items: center;
+    position: relative;
+    background:
+      conic-gradient(var(--bronze) 0 58%, rgba(246,246,244,.10) 58% 100%);
+  }
+
+  .score-disc::before {
+    content: "";
+    position: absolute;
+    inset: 12px;
+    border-radius: 50%;
+    background: var(--graphite);
+    box-shadow: inset 0 0 0 1px rgba(246,246,244,.10);
+  }
+
+  .score-disc strong {
+    position: relative;
+    z-index: 1;
+    font-family: var(--serif);
+    font-size: 78px;
+    font-weight: 500;
+    color: var(--offwhite);
+    line-height: .8;
+  }
+
+  .score-disc span {
+    position: relative;
+    z-index: 1;
+    color: rgba(246,246,244,.50);
+    font-size: 10px;
+    letter-spacing: .2em;
+    text-transform: uppercase;
+    margin-top: 8px;
+  }
+
+  .score-meta-grid {
+    display: grid;
+    gap: 12px;
+    position: relative;
+    z-index: 1;
+  }
+
+  .score-meta-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    padding: 11px 0;
+    border-top: 1px solid rgba(246,246,244,.10);
+  }
+
+  .score-meta-item span {
+    color: rgba(246,246,244,.48);
+    font-size: 11px;
+    letter-spacing: .12em;
+    text-transform: uppercase;
+  }
+
+  .score-meta-item strong {
+    color: var(--offwhite);
+    font-size: 13px;
+    font-weight: 600;
+    text-align: right;
+  }
+
+  .executive-card {
+    border: 1px solid var(--line);
+    background: rgba(255,255,255,.72);
+    border-radius: var(--radius);
+    padding: clamp(26px, 4vw, 42px);
+    box-shadow: 0 1px 0 rgba(255,255,255,.8) inset;
+  }
+
+  .statement {
+    font-family: var(--serif);
+    font-size: clamp(28px, 3.2vw, 44px);
+    line-height: 1.08;
+    color: var(--graphite);
+    margin-bottom: 24px;
+  }
+
+  .statement em {
+    color: var(--bronze);
+    font-style: normal;
+  }
+
+  .executive-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 1px;
+    background: var(--line);
+    border: 1px solid var(--line);
+    margin-top: 30px;
+  }
+
+  .executive-item {
+    background: var(--offwhite);
+    padding: 22px;
+  }
+
+  .executive-item small {
+    display: block;
+    color: var(--muted);
+    font-size: 10px;
+    letter-spacing: .18em;
+    text-transform: uppercase;
+    margin-bottom: 8px;
+  }
+
+  .executive-item strong {
+    display: block;
+    font-size: 17px;
+    color: var(--graphite);
+    line-height: 1.3;
+  }
+
+  .note-box {
+    margin-top: 24px;
+    border-left: 2px solid var(--bronze);
+    background: var(--bronze-soft);
+    padding: 18px 20px;
+    color: rgba(14,17,22,.70);
+    font-size: 13px;
+  }
+
+  /* Cards */
+  .card-grid {
+    display: grid;
+    gap: 18px;
+  }
+
+  .grid-2 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .grid-3 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .grid-4 { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+
+  .card {
+    background: rgba(255,255,255,.74);
+    border: 1px solid var(--line);
+    border-radius: 16px;
+    padding: 26px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .card.dark-card {
+    background: rgba(246,246,244,.045);
+    border-color: rgba(246,246,244,.12);
+  }
+
+  .card::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 26px;
+    right: 26px;
+    height: 1px;
+    background: var(--bronze-line);
+    opacity: .65;
+  }
+
+  .card-number {
+    width: 34px;
+    height: 34px;
+    border-radius: 50%;
+    border: 1px solid var(--bronze-line);
+    display: inline-grid;
+    place-items: center;
+    color: var(--bronze);
+    font-size: 12px;
+    font-weight: 600;
+    margin-bottom: 22px;
+  }
+
+  .card h3,
+  .card h4 {
+    font-family: var(--serif);
+    font-size: 27px;
+    font-weight: 500;
+    line-height: 1.05;
+    margin-bottom: 14px;
+    color: var(--graphite);
+  }
+
+  .dark .card h3,
+  .dark .card h4 { color: var(--offwhite); }
+
+  .card p,
+  .card li {
+    color: rgba(14,17,22,.66);
+    font-size: 14px;
+  }
+
+  .dark .card p,
+  .dark .card li { color: rgba(246,246,244,.62); }
+
+  .pill {
+    display: inline-flex;
+    align-items: center;
+    border: 1px solid var(--bronze-line);
+    color: var(--bronze);
+    border-radius: 999px;
+    padding: 6px 10px;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: .12em;
+    text-transform: uppercase;
+    line-height: 1;
+    margin-bottom: 16px;
+  }
+
+  .pill.danger { border-color: rgba(155,61,51,.32); color: var(--danger); background: rgba(155,61,51,.06); }
+  .pill.warning { border-color: rgba(167,108,45,.34); color: var(--warning); background: rgba(167,108,45,.08); }
+  .pill.medium { border-color: rgba(13,56,76,.25); color: var(--petrol); background: rgba(13,56,76,.07); }
+  .dark .pill.medium { color: #8FB4C3; border-color: rgba(143,180,195,.35); background: rgba(143,180,195,.08); }
+
+  /* Pillar breakdown */
+  .pillar-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 16px;
+  }
+
+  .pillar-card {
+    background: rgba(255,255,255,.78);
+    border: 1px solid var(--line);
+    border-radius: 16px;
+    padding: 24px;
+  }
+
+  .pillar-top {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 20px;
+    margin-bottom: 18px;
+  }
+
+  .pillar-title {
+    font-family: var(--serif);
+    font-size: 28px;
+    line-height: 1;
+    font-weight: 500;
+    color: var(--graphite);
+  }
+
+  .pillar-score {
+    min-width: 66px;
+    height: 46px;
+    display: grid;
+    place-items: center;
+    border: 1px solid var(--bronze-line);
+    background: var(--bronze-soft);
+    color: var(--graphite);
+    font-weight: 700;
+    font-size: 18px;
+  }
+
+  .bar {
+    height: 6px;
+    border-radius: 999px;
+    background: rgba(14,17,22,.09);
+    overflow: hidden;
+    margin-bottom: 16px;
+  }
+
+  .bar span {
+    display: block;
+    height: 100%;
+    border-radius: inherit;
+    background: var(--bronze);
+  }
+
+  .bar.danger span { background: var(--danger); }
+  .bar.warning span { background: var(--warning); }
+  .bar.ok span { background: var(--ok); }
+  .bar.petrol span { background: var(--petrol); }
+
+  .pillar-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-bottom: 14px;
+  }
+
+  .status-chip {
+    border: 1px solid var(--line);
+    border-radius: 999px;
+    padding: 5px 9px;
+    color: rgba(14,17,22,.62);
+    font-size: 10px;
+    letter-spacing: .08em;
+    text-transform: uppercase;
+    font-weight: 600;
+  }
+
+  .status-chip.priority { color: var(--bronze); border-color: var(--bronze-line); background: var(--bronze-soft); }
+
+  /* Table */
+  .table-wrap {
+    border: 1px solid var(--line);
+    border-radius: 18px;
+    overflow: auto;
+    background: rgba(255,255,255,.72);
+  }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    min-width: 900px;
+  }
+
+  th, td {
+    text-align: left;
+    vertical-align: top;
+    border-bottom: 1px solid var(--line);
+    padding: 18px 18px;
+    font-size: 13px;
+  }
+
+  th {
+    color: var(--bronze);
+    font-size: 10px;
+    letter-spacing: .16em;
+    text-transform: uppercase;
+    font-weight: 700;
+    background: rgba(184,134,72,.08);
+  }
+
+  tr:last-child td { border-bottom: 0; }
+  td strong { display: block; color: var(--graphite); font-size: 14px; margin-bottom: 5px; }
+  td .sub { color: var(--muted); font-size: 12px; }
+  .validated { color: var(--ok); font-weight: 700; }
+  .not-validated { color: var(--muted); font-weight: 600; }
+
+  /* Lists */
+  .clean-list {
+    display: grid;
+    gap: 12px;
+    list-style: none;
+  }
+
+  .clean-list li {
+    display: grid;
+    grid-template-columns: 28px 1fr;
+    gap: 12px;
+    align-items: start;
+  }
+
+  .list-marker {
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    border: 1px solid var(--bronze-line);
+    color: var(--bronze);
+    display: grid;
+    place-items: center;
+    font-size: 11px;
+    font-weight: 700;
+    line-height: 1;
+  }
+
+  .timeline-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 1px;
+    background: var(--line);
+    border: 1px solid var(--line);
+    border-radius: 18px;
+    overflow: hidden;
+  }
+
+  .timeline-card {
+    background: rgba(255,255,255,.75);
+    padding: 30px;
+  }
+
+  .timeline-card h3 {
+    font-size: 32px;
+    margin-bottom: 6px;
+  }
+
+  .timeline-card .time {
+    color: var(--bronze);
+    text-transform: uppercase;
+    letter-spacing: .16em;
+    font-size: 11px;
+    font-weight: 700;
+    margin-bottom: 24px;
+  }
+
+  /* Existing signal bars */
+  .activation-grid {
+    display: grid;
+    gap: 18px;
+  }
+
+  .signal-row {
+    display: grid;
+    grid-template-columns: minmax(160px, 270px) minmax(0, 1fr) 70px;
+    gap: 18px;
+    align-items: center;
+    padding: 18px 0;
+    border-bottom: 1px solid rgba(246,246,244,.10);
+  }
+
+  .signal-row:last-child { border-bottom: 0; }
+
+  .signal-name {
+    color: rgba(246,246,244,.70);
+    font-size: 13px;
+    font-weight: 500;
+  }
+
+  .signal-track {
+    height: 7px;
+    border-radius: 999px;
+    background: rgba(246,246,244,.10);
+    overflow: hidden;
+  }
+
+  .signal-fill {
+    height: 100%;
+    border-radius: inherit;
+    background: var(--bronze);
+  }
+
+  .signal-pct {
+    text-align: right;
+    color: rgba(246,246,244,.58);
+    font-weight: 700;
+    font-size: 13px;
+  }
+
+  /* Methodology */
+  .method-box {
+    display: grid;
+    grid-template-columns: minmax(0, .9fr) minmax(0, 1.1fr);
+    gap: 44px;
+    background: var(--graphite);
+    color: var(--offwhite);
+    border-radius: 20px;
+    padding: clamp(30px, 5vw, 52px);
+    border: 1px solid var(--bronze-line);
+  }
+
+  .method-box h2 { color: var(--offwhite); }
+  .method-box .lead { color: rgba(246,246,244,.62); }
+  .method-list {
+    display: grid;
+    gap: 14px;
+    list-style: none;
+  }
+
+  .method-list li {
+    padding: 16px 0;
+    border-bottom: 1px solid rgba(246,246,244,.10);
+    color: rgba(246,246,244,.68);
+    font-size: 14px;
+  }
+
+  .method-list li:last-child { border-bottom: 0; }
+  .method-list strong { color: var(--offwhite); font-weight: 600; }
+
+  /* CTA / Footer */
+  .closing {
+    background:
+      linear-gradient(90deg, rgba(246,246,244,.040) 1px, transparent 1px),
+      linear-gradient(180deg, rgba(246,246,244,.032) 1px, transparent 1px),
+      linear-gradient(135deg, var(--graphite) 0%, #111720 100%);
+    background-size: 76px 76px, 76px 76px, auto;
+    color: var(--offwhite);
+    padding: clamp(70px, 9vw, 118px) 0;
+  }
+
+  .closing h2 {
+    color: var(--offwhite);
+    max-width: 690px;
+    margin-bottom: 24px;
+  }
+
+  .closing .lead { color: rgba(246,246,244,.62); }
+
+  .closing-actions {
+    margin-top: 42px;
+    display: grid;
+    gap: 14px;
+    max-width: 760px;
+  }
+
+  .closing-action {
+    display: grid;
+    grid-template-columns: 34px 1fr;
+    gap: 16px;
+    align-items: start;
+    border-top: 1px solid rgba(246,246,244,.10);
+    padding-top: 18px;
+  }
+
+  .closing-action span:first-child {
+    width: 34px;
+    height: 34px;
+    border-radius: 50%;
+    border: 1px solid rgba(184,134,72,.48);
+    color: var(--bronze-2);
+    display: grid;
+    place-items: center;
+    font-size: 12px;
+    font-weight: 700;
+  }
+
+  .closing-action strong {
+    color: var(--offwhite);
+    font-weight: 600;
+  }
+
+  .closing-action p {
+    color: rgba(246,246,244,.62);
+    font-size: 14px;
+  }
+
+  .footer {
+    background: var(--graphite);
+    color: rgba(246,246,244,.42);
+    border-top: 1px solid rgba(246,246,244,.10);
+    padding: 26px 0;
+  }
+
+  .footer-inner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 22px;
+    font-size: 11px;
+    letter-spacing: .12em;
+    text-transform: uppercase;
+  }
+
+  .footer-inner strong {
+    color: var(--bronze-2);
+    font-weight: 600;
+  }
+
+  .print-break { break-before: page; }
+
+  @media (max-width: 900px) {
+    .cover,
+    .cover-inner { min-height: auto; }
+    .cover-client,
+    .score-layout,
+    .section-header,
+    .method-box,
+    .timeline-grid {
+      grid-template-columns: 1fr;
+    }
+    .cover-client { background: transparent; gap: 10px; }
+    .cover-meta { border: 1px solid rgba(246,246,244,.12); }
+    .pillar-grid,
+    .grid-2,
+    .grid-3,
+    .grid-4,
+    .executive-grid {
+      grid-template-columns: 1fr;
+    }
+    .signal-row {
+      grid-template-columns: 1fr;
+      gap: 8px;
+    }
+    .signal-pct { text-align: left; }
+  }
+
+  @media (max-width: 640px) {
+    .container { width: min(100% - 28px, 1020px); }
+    .brand-signature {
+      min-width: 0;
+      grid-template-columns: 42px auto;
+      gap: 12px;
+    }
+    .brand-mark { width: 42px; height: 42px; }
+    .brand-name { font-size: 13px; letter-spacing: .22em; }
+    .brand-tagline { font-size: 8px; letter-spacing: .22em; }
+    .cover-top,
+    .cover-bottom {
+      flex-direction: column;
+      align-items: flex-start;
+    }
+    .confidential-seal { white-space: normal; }
+    .cover-center { padding: 78px 0 42px; }
+    .score-panel { padding: 28px 22px; }
+    .score-disc { width: 166px; height: 166px; }
+    .score-disc strong { font-size: 62px; }
+    .card, .pillar-card, .timeline-card { padding: 22px; }
+    .footer-inner {
+      flex-direction: column;
+      align-items: flex-start;
+    }
+  }
+
+  @media print {
+    @page { size: A4; margin: 12mm; }
+
+    body {
+      background: #fff !important;
+      font-size: 12px;
+      color: var(--graphite);
+    }
+
+    .report-shell {
+      width: 100%;
+      box-shadow: none;
+      background: #fff;
+    }
+
+    .container { width: 100%; }
+
+    .cover {
+      min-height: 270mm;
+      page-break-after: always;
+    }
+
+    .cover-inner { min-height: 270mm; }
+
+    .section,
+    .closing {
+      padding: 22mm 0;
+    }
+
+    .card,
+    .pillar-card,
+    .timeline-card,
+    .score-panel,
+    .executive-card,
+    .method-box,
+    .table-wrap {
+      break-inside: avoid;
+    }
+
+    .section.dark,
+    .cover,
+    .closing,
+    .footer,
+    .method-box {
+      -webkit-print-color-adjust: exact;
+      print-color-adjust: exact;
+    }
+
+    h1 { font-size: 72px; }
+    h2 { font-size: 42px; }
+
+    .table-wrap { overflow: visible; }
+    table { min-width: 0; }
+    th, td { padding: 10px; font-size: 10px; }
+  }
+</style>
+</head>
+<body>
+  <main class="report-shell">
+
+    <!-- CAPA -->
+    <section class="cover" aria-label="Capa do relatório">
+      <div class="container cover-inner">
+        <div class="cover-top">
+          <div class="brand-signature">
+            <svg class="brand-mark" viewBox="0 0 64 64" aria-hidden="true">
+              <path class="light" d="M9 54 L31 9 L55 54" fill="none" stroke-width="3.2" stroke-linecap="square"/>
+              <path class="light" d="M21 54 L39 18" fill="none" stroke-width="3.2" stroke-linecap="square"/>
+              <path class="bronze" d="M35 38 H50" fill="none" stroke-width="3.2" stroke-linecap="square"/>
+              <rect class="bronze" x="38" y="49" width="6" height="6"/>
+            </svg>
+            <div class="brand-word">
+              <span class="brand-name">Arquitetura B2B</span>
+              <span class="brand-tagline">Clareza antes da execução.</span>
+            </div>
+          </div>
+          <div class="confidential-seal">Confidencial · Uso Estratégico</div>
+        </div>
+
+        <div class="cover-center">
+          <p class="cover-kicker">Audit Report Premium</p>
+          <h1>Diagnóstico Estratégico Digital</h1>
+          <p class="cover-subtitle">Reposicionamento da Jack Sir como marca de acessórios masculinos de identidade, presença e simbologia.</p>
+
+          <div class="cover-client" aria-label="Metadados do relatório">
+            <div class="cover-meta">
+              <span>Cliente</span>
+              <strong>Jack Sir<br>JackSir Online</strong>
+            </div>
+            <div class="cover-meta">
+              <span>Território</span>
+              <strong>Acessórios masculinos<br>Identidade · Fé · Estilo · Presença</strong>
+            </div>
+            <div class="cover-meta">
+              <span>Oferta foco</span>
+              <strong>Pulseiras · Anéis · Correntes<br>Prata 925 · Aço · Pedras</strong>
+            </div>
+            <div class="cover-meta">
+              <span>Data</span>
+              <strong>Não validada nesta etapa<br>Versão v0.1</strong>
+            </div>
+          </div>
+        </div>
+
+        <div class="cover-bottom">
+          <p class="doc-code">Relatório executivo de consultoria estratégica · Não substitui auditoria com dados internos</p>
+          <p class="doc-code">ArquiteturaB2B · Diagnóstico · Posicionamento · Crescimento Digital</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- SCORE EXECUTIVO -->
+    <section class="section" aria-label="Score executivo">
+      <div class="container">
+        <div class="section-header">
+          <div>
+            <p class="eyebrow">Índice Executivo</p>
+            <h2>ArquiteturaB2B de Clareza Digital</h2>
+          </div>
+          <p class="lead">Leitura estratégica interna baseada nas evidências públicas e no material enviado. O objetivo é orientar prioridade de decisão, não substituir uma ferramenta externa de medição.</p>
+        </div>
+
+        <div class="score-layout">
+          <aside class="score-panel">
+            <p class="score-label">Score geral</p>
+            <div class="score-disc" style="background: conic-gradient(var(--bronze) 0 50%, rgba(246,246,244,.10) 50% 100%);" aria-label="Score geral C">
+              <div>
+                <strong>C</strong>
+                <span>Avaliação interna</span>
+              </div>
+            </div>
+            <div class="score-meta-grid">
+              <div class="score-meta-item">
+                <span>Classificação</span>
+                <strong>C</strong>
+              </div>
+              <div class="score-meta-item">
+                <span>Risco comercial</span>
+                <strong>Alto</strong>
+              </div>
+              <div class="score-meta-item">
+                <span>Prioridade</span>
+                <strong>Reposicionamento antes da escala</strong>
+              </div>
+            </div>
+          </aside>
+
+          <article class="executive-card">
+            <p class="statement">A Jack Sir tem produto, história e potencial premium, mas sua arquitetura digital ainda não sustenta com clareza essa <em>percepção de valor</em>.</p>
+            <p class="lead">A marca vende produtos com valor percebido, presença física citada em shoppings e catálogo com linhas de estilo, fé e identidade. O problema preliminar não parece ser apenas técnico: envolve posicionamento, reputação pública, coerência de marca, SEO on-page, experiência de confiança e navegação por intenção.</p>
+
+            <div class="executive-grid">
+              <div class="executive-item">
+                <small>SEO observado</small>
+                <strong>Nota geral 33 no material analisado.</strong>
+              </div>
+              <div class="executive-item">
+                <small>Página/produto</small>
+                <strong>Desempenho público 43; parte das métricas não foi recuperada.</strong>
+              </div>
+              <div class="executive-item">
+                <small>Risco reputacional</small>
+                <strong>Reclame Aqui e avaliações públicas citados como pontos sensíveis.</strong>
+              </div>
+              <div class="executive-item">
+                <small>Canais sociais</small>
+                <strong>Instagram oficial citado; Facebook Morumbi apareceu indisponível na coleta.</strong>
+              </div>
+            </div>
+
+            <div class="note-box">
+              <strong>Nota metodológica:</strong> a classificação C é uma leitura estratégica interna da ArquiteturaB2B. Não é métrica oficial de Google, Meta, PageSpeed, Reclame Aqui ou qualquer plataforma externa. Os scores devem ser refinados após validação dos dados pendentes.
+            </div>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- BREAKDOWN POR PILARES -->
+    <section class="section kraft" aria-label="Breakdown por pilares">
+      <div class="container">
+        <div class="section-header">
+          <div>
+            <p class="eyebrow">Pilares de Diagnóstico</p>
+            <h2>Onde a percepção premium está sendo perdida</h2>
+          </div>
+          <p class="lead">Cada nota representa uma leitura estratégica relativa, baseada nos sinais públicos disponíveis. A escala prioriza risco comercial, clareza percebida e capacidade de sustentar confiança antes da compra.</p>
+        </div>
+
+        <div class="pillar-grid">
+          <article class="pillar-card">
+            <div class="pillar-top">
+              <div>
+                <p class="pillar-title">Posicionamento</p>
+              </div>
+              <div class="pillar-score">45</div>
+            </div>
+            <div class="bar warning"><span style="width:45%"></span></div>
+            <div class="pillar-meta">
+              <span class="status-chip">Status: Atenção estratégica</span>
+              <span class="status-chip priority">Prioridade: Alta</span>
+            </div>
+            <p class="micro">A marca não deve ser tratada apenas como loja de acessórios masculinos. Há oportunidade de reposicionar a Jack Sir como marca de identidade, presença, fé, estilo e simbologia.</p>
+          </article>
+
+          <article class="pillar-card">
+            <div class="pillar-top">
+              <div>
+                <p class="pillar-title">Reputação</p>
+              </div>
+              <div class="pillar-score">28</div>
+            </div>
+            <div class="bar danger"><span style="width:28%"></span></div>
+            <div class="pillar-meta">
+              <span class="status-chip">Status: Crítico</span>
+              <span class="status-chip priority">Prioridade: Alta</span>
+            </div>
+            <p class="micro">A reputação pública aparece como pilar sensível. Reclame Aqui, Google Business e redes sociais precisam ser tratados como ativos de confiança, não apenas canais reativos.</p>
+          </article>
+
+          <article class="pillar-card">
+            <div class="pillar-top">
+              <div>
+                <p class="pillar-title">SEO Local</p>
+              </div>
+              <div class="pillar-score">35</div>
+            </div>
+            <div class="bar danger"><span style="width:35%"></span></div>
+            <div class="pillar-meta">
+              <span class="status-chip">Status: Atenção crítica</span>
+              <span class="status-chip priority">Prioridade: Alta</span>
+            </div>
+            <p class="micro">A presença local precisa ser validada por unidade oficial. Em shopping, a disputa envolve atenção, presente, ticket, impulso e percepção de marca.</p>
+          </article>
+
+          <article class="pillar-card">
+            <div class="pillar-top">
+              <div>
+                <p class="pillar-title">SEO Técnico / On-page</p>
+              </div>
+              <div class="pillar-score">38</div>
+            </div>
+            <div class="bar danger"><span style="width:38%"></span></div>
+            <div class="pillar-meta">
+              <span class="status-chip">Status: Incompleto</span>
+              <span class="status-chip priority">Prioridade: Alta</span>
+            </div>
+            <p class="micro">O material indica múltiplos H1, título curto, imagens sem alt text, imagens sem otimização clara, hreflang ausente e problemas em links sociais.</p>
+          </article>
+
+          <article class="pillar-card">
+            <div class="pillar-top">
+              <div>
+                <p class="pillar-title">Conversão / Confiança</p>
+              </div>
+              <div class="pillar-score">42</div>
+            </div>
+            <div class="bar warning"><span style="width:42%"></span></div>
+            <div class="pillar-meta">
+              <span class="status-chip">Status: Vulnerável</span>
+              <span class="status-chip priority">Prioridade: Alta</span>
+            </div>
+            <p class="micro">A confiança pode estar enfraquecida por inconsistências de mensagem, reputação pública sensível, links sociais desalinhados e possível divergência de comunicação de frete grátis.</p>
+          </article>
+
+          <article class="pillar-card">
+            <div class="pillar-top">
+              <div>
+                <p class="pillar-title">Coerência de Marca</p>
+              </div>
+              <div class="pillar-score">40</div>
+            </div>
+            <div class="bar petrol"><span style="width:40%"></span></div>
+            <div class="pillar-meta">
+              <span class="status-chip">Status: Diluída</span>
+              <span class="status-chip priority">Prioridade: Média/Alta</span>
+            </div>
+            <p class="micro">O produto sugere valor percebido, mas a apresentação digital ainda precisa reforçar identidade, sofisticação, curadoria e diferenciação competitiva.</p>
+          </article>
+
+          <article class="pillar-card">
+            <div class="pillar-top">
+              <div>
+                <p class="pillar-title">Experiência Mobile</p>
+              </div>
+              <div class="pillar-score">43</div>
+            </div>
+            <div class="bar warning"><span style="width:43%"></span></div>
+            <div class="pillar-meta">
+              <span class="status-chip">Status: Atenção</span>
+              <span class="status-chip priority">Prioridade: Média/Alta</span>
+            </div>
+            <p class="micro">A análise pública de página/produto com desempenho 43 sugere necessidade de revisão da experiência digital, especialmente em e-commerce.</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- KEY FINDINGS -->
+    <section class="section" aria-label="Key findings">
+      <div class="container">
+        <div class="section-header">
+          <div>
+            <p class="eyebrow">Key Findings</p>
+            <h2>Achados que impactam percepção, confiança e decisão</h2>
+          </div>
+          <p class="lead">Os pontos abaixo não atacam a operação atual. Eles mostram onde a comunicação pública pode estar deixando valor estratégico sem ativação.</p>
+        </div>
+
+        <div class="card-grid grid-3">
+          <article class="card">
+            <span class="pill danger">Crítico</span>
+            <span class="card-number">01</span>
+            <h3>Posicionamento diluído</h3>
+            <p>A Jack Sir comunica acessórios masculinos, mas ainda não sustenta com força suficiente um território proprietário de identidade, presença, estilo, fé e simbologia.</p>
+          </article>
+
+          <article class="card">
+            <span class="pill danger">Crítico</span>
+            <span class="card-number">02</span>
+            <h3>Reputação vulnerável</h3>
+            <p>O material cita Reclame Aqui e prints de avaliações negativas como fontes de risco reputacional. Para uma marca com ticket intermediário e premium, confiança precisa ser gerida como ativo central.</p>
+          </article>
+
+          <article class="card">
+            <span class="pill warning">Alto</span>
+            <span class="card-number">03</span>
+            <h3>SEO on-page incompleto</h3>
+            <p>Foram apontados múltiplos H1, título curto, imagens sem alt text, imagens sem otimização clara, hreflang ausente e redes sociais pouco conectadas.</p>
+          </article>
+
+          <article class="card">
+            <span class="pill warning">Alto</span>
+            <span class="card-number">04</span>
+            <h3>Frete grátis exige validação</h3>
+            <p>O material aponta possível divergência entre topo da home, carrinho e página de produto. Se confirmado, o ponto deve ser tratado como crítico para confiança e conversão.</p>
+          </article>
+
+          <article class="card">
+            <span class="pill medium">Médio</span>
+            <span class="card-number">05</span>
+            <h3>Canais sociais como prova</h3>
+            <p>Instagram, Facebook e Google Business precisam funcionar como ativos de validação social. O Facebook Morumbi apareceu indisponível no print e deve ser validado.</p>
+          </article>
+
+          <article class="card">
+            <span class="pill medium">Médio</span>
+            <span class="card-number">06</span>
+            <h3>Navegação por intenção</h3>
+            <p>Além das categorias tradicionais, há oportunidade de organizar coleções por uso diário, presente, fé, casual urbano, prata premium, looks completos e mais vendidos.</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- DIAGNÓSTICO EXECUTIVO -->
+    <section class="section dark" aria-label="Diagnóstico executivo">
+      <div class="container">
+        <div class="section-header">
+          <div>
+            <p class="eyebrow">Diagnóstico Executivo</p>
+            <h2>Por que a percepção premium ainda não está clara</h2>
+          </div>
+          <p class="lead">Quando a marca não organiza sua proposta em torno de significado, confiança e intenção de compra, o cliente tende a comparar apenas produto, preço ou conveniência.</p>
+        </div>
+
+        <div class="card-grid grid-2">
+          <article class="card dark-card">
+            <span class="pill">Posicionamento</span>
+            <h3>A narrativa pública ainda está genérica</h3>
+            <ul class="clean-list">
+              <li><span class="list-marker">1</span><span>A Jack Sir não deve ser comunicada apenas como loja de acessórios masculinos.</span></li>
+              <li><span class="list-marker">2</span><span>O território recomendado é acessórios masculinos de identidade, presença, estilo e simbologia.</span></li>
+              <li><span class="list-marker">3</span><span>A comunicação deve conectar design robusto, fé, personalidade, sofisticação e uso cotidiano.</span></li>
+            </ul>
+          </article>
+
+          <article class="card dark-card">
+            <span class="pill">Produto</span>
+            <h3>As categorias precisam ganhar significado comercial</h3>
+            <ul class="clean-list">
+              <li><span class="list-marker">1</span><span>Corda Náutica pode ser a linha assinatura: resistência, estilo urbano e personalidade.</span></li>
+              <li><span class="list-marker">2</span><span>Fé &amp; Símbolos pode representar acessórios de fé com design masculino contemporâneo.</span></li>
+              <li><span class="list-marker">3</span><span>Prata 925, Pedras, Aço Cirúrgico e Visual Combinado podem organizar intenção, ocasião e valor percebido.</span></li>
+            </ul>
+          </article>
+
+          <article class="card dark-card">
+            <span class="pill">Reputação</span>
+            <h3>Confiança precisa ser gerenciada como ativo de marca</h3>
+            <ul class="clean-list">
+              <li><span class="list-marker">1</span><span>Reclame Aqui, Google Business e redes sociais devem ser integrados à estratégia de confiança.</span></li>
+              <li><span class="list-marker">2</span><span>Avaliações negativas e páginas indisponíveis fragilizam percepção em produtos de maior valor percebido.</span></li>
+              <li><span class="list-marker">3</span><span>A resposta pública precisa ter tom profissional, sem agressividade e sem prometer resultado impossível.</span></li>
+            </ul>
+          </article>
+
+          <article class="card dark-card">
+            <span class="pill">E-commerce e SEO</span>
+            <h3>A estrutura digital precisa guiar o cliente por intenção</h3>
+            <ul class="clean-list">
+              <li><span class="list-marker">1</span><span>Coleções por intenção ajudam quem sabe a ocasião, mas ainda não sabe exatamente qual peça comprar.</span></li>
+              <li><span class="list-marker">2</span><span>Páginas de produto devem explicar material, ocasião, combinação, cuidados, troca, loja física e atendimento.</span></li>
+              <li><span class="list-marker">3</span><span>SEO on-page precisa corrigir H1, titles, alt text, textos de coleção, links sociais e estrutura por material, símbolo e estilo.</span></li>
+            </ul>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- ATIVAÇÃO DOS ATIVOS DIGITAIS -->
+    <section class="section dark compact" aria-label="Nível de ativação dos ativos digitais">
+      <div class="container">
+        <div class="section-header">
+          <div>
+            <p class="eyebrow">Ativação dos Ativos</p>
+            <h2>Potencial real versus aproveitamento atual</h2>
+          </div>
+          <p class="lead">As barras abaixo são leituras estratégicas internas. Elas usam CSS puro, sem bibliotecas externas, para manter boa leitura no navegador, no mobile e na exportação em PDF.</p>
+        </div>
+
+        <div class="activation-grid">
+          <div class="signal-row">
+            <span class="signal-name">Posicionamento digital</span>
+            <div class="signal-track"><div class="signal-fill" style="width:45%; background: var(--warning);"></div></div>
+            <span class="signal-pct">45%</span>
+          </div>
+          <div class="signal-row">
+            <span class="signal-name">Reputação pública</span>
+            <div class="signal-track"><div class="signal-fill" style="width:28%; background: var(--danger);"></div></div>
+            <span class="signal-pct">28%</span>
+          </div>
+          <div class="signal-row">
+            <span class="signal-name">SEO técnico / on-page</span>
+            <div class="signal-track"><div class="signal-fill" style="width:38%; background: var(--danger);"></div></div>
+            <span class="signal-pct">38%</span>
+          </div>
+          <div class="signal-row">
+            <span class="signal-name">Conversão e confiança</span>
+            <div class="signal-track"><div class="signal-fill" style="width:42%; background: var(--warning);"></div></div>
+            <span class="signal-pct">42%</span>
+          </div>
+          <div class="signal-row">
+            <span class="signal-name">Experiência mobile</span>
+            <div class="signal-track"><div class="signal-fill" style="width:43%; background: var(--warning);"></div></div>
+            <span class="signal-pct">43%</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- QUICK WINS -->
+    <section class="section kraft" aria-label="Quick wins">
+      <div class="container">
+        <div class="section-header">
+          <div>
+            <p class="eyebrow">Quick Wins</p>
+            <h2>Correções por janela de decisão</h2>
+          </div>
+          <p class="lead">A ordem recomendada evita execução dispersa. Primeiro valida os dados sensíveis; depois reorganiza a mensagem, a reputação e a arquitetura de conversão.</p>
+        </div>
+
+        <div class="timeline-grid">
+          <article class="timeline-card">
+            <p class="time">Esta semana</p>
+            <h3>Validação e confiança</h3>
+            <ul class="clean-list">
+              <li><span class="list-marker">1</span><span>Validar se o diagnóstico será da marca como um todo ou de uma unidade específica.</span></li>
+              <li><span class="list-marker">2</span><span>Validar a possível inconsistência de frete grátis entre home, carrinho e página de produto.</span></li>
+              <li><span class="list-marker">3</span><span>Confirmar links sociais e canais oficiais, incluindo Instagram, Facebook citado e Google Business Profiles.</span></li>
+              <li><span class="list-marker">4</span><span>Mapear prioridades de reputação pública em Reclame Aqui, Google Business e avaliações negativas citadas.</span></li>
+            </ul>
+          </article>
+
+          <article class="timeline-card">
+            <p class="time">30 dias</p>
+            <h3>Mensagem e SEO base</h3>
+            <ul class="clean-list">
+              <li><span class="list-marker">1</span><span>Reescrever a proposta central da home para sustentar identidade, presença, estilo e simbologia.</span></li>
+              <li><span class="list-marker">2</span><span>Criar estrutura inicial de coleções por intenção de compra.</span></li>
+              <li><span class="list-marker">3</span><span>Corrigir SEO on-page básico: H1, titles, alt text, textos de coleção, imagens e links sociais.</span></li>
+              <li><span class="list-marker">4</span><span>Melhorar páginas de produto com benefícios, material, ocasião, cuidados, troca, loja física e atendimento.</span></li>
+            </ul>
+          </article>
+
+          <article class="timeline-card">
+            <p class="time">60–90 dias</p>
+            <h3>Autoridade e conversão</h3>
+            <ul class="clean-list">
+              <li><span class="list-marker">1</span><span>Implantar rotina de reputação para Reclame Aqui, Google Business e canais sociais oficiais.</span></li>
+              <li><span class="list-marker">2</span><span>Criar conteúdo de apoio sobre materiais, medidas, símbolos, cuidados e combinações.</span></li>
+              <li><span class="list-marker">3</span><span>Expandir Visual Combinado para kits, looks e recomendações por ocasião.</span></li>
+              <li><span class="list-marker">4</span><span>Consolidar SEO local e presença por unidade validada, especialmente se MorumbiShopping for prioritário.</span></li>
+            </ul>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- BENCHMARK COMPETITIVO -->
+    <section class="section" aria-label="Benchmark competitivo">
+      <div class="container">
+        <div class="section-header">
+          <div>
+            <p class="eyebrow">Benchmark Competitivo</p>
+            <h2>Comparação de percepção pública</h2>
+          </div>
+          <p class="lead">A tabela evita inferências não validadas. Onde não há dado confirmado nesta etapa, o campo permanece explicitamente marcado como não validado.</p>
+        </div>
+
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Marca</th>
+                <th>Posicionamento</th>
+                <th>Clareza da oferta</th>
+                <th>Prova social</th>
+                <th>Presença local / digital</th>
+                <th>Percepção premium</th>
+                <th>Oportunidade de diferenciação</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><strong>Jack Sir</strong><span class="sub">Cliente auditado</span></td>
+                <td>Acessórios masculinos; oportunidade de reposicionamento para identidade, presença, fé, estilo e simbologia.</td>
+                <td>Parcial; produto existe, mas o território estratégico precisa ser mais claro.</td>
+                <td>Vulnerável; Reclame Aqui e avaliações públicas precisam de gestão e validação.</td>
+                <td>E-commerce, Instagram oficial e presença física citada; unidades oficiais e canais precisam validação.</td>
+                <td>Potencial alto; comunicação digital ainda parece abaixo do valor percebido dos produtos.</td>
+                <td>Transformar categorias soltas em linhas com significado, intenção de compra e narrativa premium.</td>
+              </tr>
+              <tr>
+                <td><strong>Key Design</strong><span class="sub">Concorrente direto online</span></td>
+                <td>Pulseiras masculinas, couro, pedras, aço, cabo de aço, braceletes e faixa de preço próxima.</td>
+                <td><span class="not-validated">Não validado nesta etapa.</span></td>
+                <td><span class="not-validated">Não validado nesta etapa.</span></td>
+                <td><span class="not-validated">Não validado nesta etapa.</span></td>
+                <td><span class="not-validated">Não validado nesta etapa.</span></td>
+                <td>Comparar clareza de coleções, narrativa de produto, experiência de compra e prova social.</td>
+              </tr>
+              <tr>
+                <td><strong>Vorax Acessórios</strong><span class="sub">Concorrente direto online</span></td>
+                <td>Pulseiras, couro, pedras naturais, corda náutica, braceletes, colares e escapulários.</td>
+                <td><span class="not-validated">Não validado nesta etapa.</span></td>
+                <td><span class="not-validated">Não validado nesta etapa.</span></td>
+                <td><span class="not-validated">Não validado nesta etapa.</span></td>
+                <td><span class="not-validated">Não validado nesta etapa.</span></td>
+                <td>Avaliar organização por material, estilo, intenção de compra e clareza de produto.</td>
+              </tr>
+              <tr>
+                <td><strong>Luhem</strong><span class="sub">Concorrente relevante online/físico</span></td>
+                <td>Pulseiras masculinas, pedras naturais, prata e presença física em shopping.</td>
+                <td><span class="not-validated">Não validado nesta etapa.</span></td>
+                <td><span class="not-validated">Não validado nesta etapa.</span></td>
+                <td><span class="not-validated">Não validado nesta etapa.</span></td>
+                <td><span class="not-validated">Não validado nesta etapa.</span></td>
+                <td>Comparar percepção premium, presença em shopping, produto, prova social e navegação por intenção.</td>
+              </tr>
+              <tr>
+                <td><strong>Old Siller</strong><span class="sub">Concorrente premium online</span></td>
+                <td>Prata 925, anéis, colares, correntes, pulseiras e escapulários masculinos.</td>
+                <td><span class="not-validated">Não validado nesta etapa.</span></td>
+                <td><span class="not-validated">Não validado nesta etapa.</span></td>
+                <td><span class="not-validated">Não validado nesta etapa.</span></td>
+                <td><span class="not-validated">Não validado nesta etapa.</span></td>
+                <td>Comparar percepção de prata 925, sofisticação, conteúdo de produto e autoridade de categoria.</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- MÉTRICAS DE ACOMPANHAMENTO -->
+    <section class="section kraft" aria-label="Métricas de acompanhamento">
+      <div class="container">
+        <div class="section-header">
+          <div>
+            <p class="eyebrow">Métricas de Acompanhamento</p>
+            <h2>O que deve ser medido após a Fase 1</h2>
+          </div>
+          <p class="lead">Indicadores objetivos para acompanhar avanço de clareza, reputação, SEO, experiência e arquitetura de conversão sem depender de métricas de vaidade.</p>
+        </div>
+
+        <div class="card-grid grid-3">
+          <article class="card">
+            <span class="card-number">01</span>
+            <h3>Clareza da proposta central</h3>
+            <p>Mede se a home comunica imediatamente o território de acessórios masculinos de identidade, presença, fé, estilo e simbologia.</p>
+            <p class="micro">Fonte sugerida: auditoria manual de mensagem, homepage e primeira dobra.</p>
+          </article>
+          <article class="card">
+            <span class="card-number">02</span>
+            <h3>Inconsistências corrigidas</h3>
+            <p>Acompanha validação e correção de possíveis divergências de frete grátis entre home, carrinho e páginas de produto.</p>
+            <p class="micro">Fonte sugerida: checklist de e-commerce e auditoria manual.</p>
+          </article>
+          <article class="card">
+            <span class="card-number">03</span>
+            <h3>Reputação pública tratada</h3>
+            <p>Mede respostas, plano de atendimento e organização de Reclame Aqui, Google Business Profiles e avaliações públicas.</p>
+            <p class="micro">Fonte sugerida: Reclame Aqui, Google Business Profile e auditoria manual de canais.</p>
+          </article>
+          <article class="card">
+            <span class="card-number">04</span>
+            <h3>SEO on-page corrigido</h3>
+            <p>Acompanha correções em H1, title, alt text, textos de coleção, imagens, hreflang quando aplicável e links sociais.</p>
+            <p class="micro">Fonte sugerida: auditoria técnica, ferramenta SEO e revisão manual.</p>
+          </article>
+          <article class="card">
+            <span class="card-number">05</span>
+            <h3>Coleções por intenção</h3>
+            <p>Mede a implementação de navegação por uso diário, presente, fé, casual urbano, prata premium, looks completos e primeira compra até R$200.</p>
+            <p class="micro">Fonte sugerida: mapa de URLs, e-commerce e auditoria UX.</p>
+          </article>
+          <article class="card">
+            <span class="card-number">06</span>
+            <h3>Produtos enriquecidos</h3>
+            <p>Verifica se páginas de produto explicam material, ocasião, como combinar, cuidados, confiança, troca, loja física e atendimento.</p>
+            <p class="micro">Fonte sugerida: auditoria de UX, copy e páginas de produto.</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- METODOLOGIA -->
+    <section class="section" aria-label="Metodologia e limites">
+      <div class="container">
+        <div class="method-box">
+          <div>
+            <p class="eyebrow">Metodologia</p>
+            <h2>Como esta leitura foi construída</h2>
+            <p class="lead">A análise prioriza decisão estratégica. Ela organiza evidências públicas, riscos de percepção e oportunidades de clareza antes de qualquer execução tática.</p>
+          </div>
+
+          <ul class="method-list">
+            <li><strong>Base de análise:</strong> material enviado, site JackSir Online, Instagram oficial citado, Facebook citado, Reclame Aqui citado, Google Business indicado em prints, análise técnica/SEO pública, catálogo de produtos e concorrentes indicados.</li>
+            <li><strong>Limitação:</strong> não houve acesso validado a Analytics, Search Console, CRM, dados internos de vendas, atendimento, plataforma de e-commerce, histórico de campanhas ou painéis oficiais da marca.</li>
+            <li><strong>Natureza dos scores:</strong> os índices são leituras estratégicas internas da ArquiteturaB2B e devem ser refinados após validação dos dados pendentes.</li>
+            <li><strong>Objetivo:</strong> priorizar decisões sobre posicionamento, reputação, SEO, conversão, experiência e arquitetura digital antes de escalar tráfego, conteúdo ou campanhas.</li>
+            <li><strong>Compromisso:</strong> o relatório não promete resultado, não ataca a marca, não critica fornecedores anteriores e não faz afirmações não validadas como se fossem fatos finais.</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- FECHAMENTO -->
+    <section class="closing" aria-label="Próximo passo">
+      <div class="container">
+        <p class="eyebrow">Próximo passo recomendado</p>
+        <h2>Validar escopo e iniciar a reorganização estratégica antes da escala.</h2>
+        <p class="lead">A Jack Sir tem produto, história, presença física citada e potencial premium. O próximo avanço não depende apenas de publicar mais conteúdo ou investir mais tráfego, mas de alinhar produto, reputação, canais e experiência na mesma promessa de valor.</p>
+
+        <div class="closing-actions">
+          <div class="closing-action">
+            <span>1</span>
+            <p><strong>Confirmar o escopo do diagnóstico:</strong> marca como um todo, e-commerce, unidade específica ou ecossistema completo.</p>
+          </div>
+          <div class="closing-action">
+            <span>2</span>
+            <p><strong>Validar dados sensíveis:</strong> canais oficiais, Google Business Profiles, concorrentes prioritários e possível inconsistência de frete grátis.</p>
+          </div>
+          <div class="closing-action">
+            <span>3</span>
+            <p><strong>Aprovar a Fase 1:</strong> reposicionamento, reputação, SEO on-page e arquitetura de confiança antes de escala de mídia, conteúdo ou campanhas.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- RODAPÉ -->
+    <footer class="footer">
+      <div class="container footer-inner">
+        <span><strong>ArquiteturaB2B</strong> · Clareza antes da execução.</span>
+        <span>Jack Sir · Diagnóstico Estratégico Digital · Confidencial</span>
+      </div>
+    </footer>
+
+  </main>
+</body>
+</html>
